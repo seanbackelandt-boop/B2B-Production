@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Sushi Boutique — Manager</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#222;--bg4:#2a2a2a;
+  --border:#2e2e2e;--border2:#3a3a3a;
+  --text:#f0ede8;--text2:#aaa;--text3:#555;
+  --green:#4ade80;--green-dim:#1a3d2a;
+  --amber:#fbbf24;--amber-dim:#3d2e0a;
+  --red:#f87171;--red-dim:#3d1515;
+  --blue:#60a5fa;--blue-dim:#1a2a3d;
+  --accent:#e8dcc8;
+  --r:8px;--rl:12px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;font-size:14px}
+.shell{display:grid;grid-template-rows:52px 1fr;height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:12px}
+.logo{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.role-badge{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:4px;background:var(--amber-dim);color:var(--amber)}
+.topbar-date{font-size:12px;color:var(--text3);margin-left:auto;font-variant-numeric:tabular-nums}
+.main{display:grid;grid-template-columns:190px 1fr;overflow:hidden}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1rem 0;overflow-y:auto}
+.nav-sec{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:14px 1.25rem 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;font-size:13px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;margin-bottom:1px}
+.nav-item:hover{color:var(--text);background:var(--bg3)}
+.nav-item.active{color:var(--text);border-left-color:var(--accent);background:var(--bg3)}
+.content{overflow-y:auto;padding:1.5rem}
+.page{display:none}.page.active{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem;margin-bottom:1rem}
+.card-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem}
+.metrics{display:grid;gap:12px;margin-bottom:1rem}
+.m4{grid-template-columns:repeat(4,1fr)}
+.m3{grid-template-columns:repeat(3,1fr)}
+.m2{grid-template-columns:repeat(2,1fr)}
+.met{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem}
+.ml{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.mv{font-size:22px;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums}
+.ms{font-size:11px;color:var(--text3);margin-top:4px}
+label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px;margin-top:10px}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:8px 10px;font-size:13px;color:var(--text);font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.btn{padding:8px 16px;font-size:12px;font-weight:500;cursor:pointer;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text);transition:all .15s;font-family:inherit}
+.btn:hover{background:var(--bg4)}
+.bta{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.bta:hover{opacity:.9;background:var(--accent)}
+.bts{padding:4px 10px;font-size:11px}
+.btd{color:var(--red);border-color:var(--red-dim)}
+.btd:hover{background:var(--red-dim)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+.bdg{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.bg{background:var(--green-dim);color:var(--green)}
+.ba{background:var(--amber-dim);color:var(--amber)}
+.br{background:var(--red-dim);color:var(--red)}
+.bb{background:var(--blue-dim);color:var(--blue)}
+.alert{border-radius:var(--r);padding:.75rem 1rem;font-size:13px;margin-bottom:.75rem;border-left:3px solid}
+.ai{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
+.aw{background:var(--amber-dim);border-color:var(--amber);color:var(--amber)}
+.ad{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+.aok{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.divider{border:none;border-top:1px solid var(--border);margin:.75rem 0}
+.sh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem}
+.st{font-size:20px;font-weight:300;color:var(--text)}
+.st-sub{font-size:12px;color:var(--text3);margin-top:3px}
+.empty{text-align:center;padding:2rem;color:var(--text3);font-size:13px}
+.uz{border:1px dashed var(--border2);border-radius:var(--rl);padding:1.25rem;text-align:center;cursor:pointer;transition:.15s}
+.uz:hover{border-color:var(--accent);background:var(--bg3)}
+.trow{display:flex;align-items:center;margin-bottom:5px}
+.tlbl{width:120px;flex-shrink:0;font-size:11px;color:var(--text3);text-align:right;padding-right:10px;line-height:1.4}
+.ttrk{flex:1;position:relative;height:28px}
+.tbar{position:absolute;height:22px;top:3px;border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:10px;font-weight:500;white-space:nowrap;overflow:hidden;min-width:3px}
+.ttick{position:absolute;top:0;bottom:0;border-left:1px solid var(--border);font-size:9px;color:var(--text3);padding-top:8px;padding-left:2px;pointer-events:none}
+.tend{position:absolute;top:-4px;bottom:-4px;border-left:2px dashed var(--red);pointer-events:none;z-index:2}
+.tcp{position:absolute;top:-4px;bottom:-4px;border-left:2px dashed var(--amber);pointer-events:none;z-index:2}
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-top:.75rem;font-size:11px;color:var(--text3)}
+.ld{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle}
+.mwc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:8px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--blue);flex-shrink:0}
+.pc{display:inline-flex;align-items:center;gap:5px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:12px;margin:3px 3px 0 0}
+.ob{border:1px solid var(--border);border-radius:var(--rl);margin-bottom:.75rem;overflow:hidden}
+.oh{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;background:var(--bg3);flex-wrap:wrap}
+.orow{display:grid;grid-template-columns:28px 1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.orow:last-child{border-bottom:none}
+.ich{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:12px;display:inline-block;margin:3px}
+.ssub{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:.75rem 0 .5rem}
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.sw-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;text-align:center}
+.sw-name{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.sw-time{font-size:36px;font-weight:300;color:var(--text);margin:8px 0;font-variant-numeric:tabular-nums}
+.sw-time.running{color:var(--green)}
+.sw-avg{font-size:11px;color:var(--text3);margin-top:6px}
+.sw-laps{margin-top:8px;text-align:left;max-height:80px;overflow-y:auto}
+.sw-lap{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;border-bottom:1px solid var(--border);color:var(--text3)}
+.ppos{color:var(--green)}.pneg{color:var(--red)}
+.tk-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:1rem 1.25rem;margin-bottom:12px}
+.tk-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.tk-name{font-size:17px;font-weight:600}
+.tk-cur{font-size:12px;color:var(--text3)}
+.tk-cur b{color:var(--green)}
+.tk-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tk-btn{padding:16px 8px;font-size:14px;font-weight:500;cursor:pointer;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);text-align:center;user-select:none;transition:all .1s}
+.tk-btn:active{transform:scale(.97)}
+.tk-btn.on{background:var(--green-dim);border-color:var(--green);color:var(--green);font-weight:600}
+.tk-live{font-variant-numeric:tabular-nums}
+.ord-done-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ord-done-row:last-child{border-bottom:none}
+@media(max-width:800px){.tk-btns{grid-template-columns:repeat(2,1fr)}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+
+/* ===== RESPONSIVE: tablet + mobiel ===== */
+@media(max-width:1000px){
+  .main{grid-template-columns:150px minmax(0,1fr)}
+  .content{padding:1rem;min-width:0}
+  .m4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g5{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card,.mwc,.tk-card{min-width:0}
+}
+
+@media(max-width:700px){
+  html,body{height:auto;min-height:100%;overflow-x:hidden}
+  .shell{height:auto;min-height:100vh;grid-template-rows:auto 1fr}
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    min-height:58px;height:auto;
+    padding:.6rem .8rem;gap:8px;flex-wrap:wrap
+  }
+  .logo{font-size:12px;line-height:1.25;max-width:145px}
+  .role-badge{font-size:9px;padding:3px 8px}
+  .topbar-date{display:none}
+
+  .main{display:block;overflow:visible}
+  .sidebar{
+    position:sticky;top:58px;z-index:25;
+    display:flex;align-items:stretch;
+    padding:0;overflow-x:auto;overflow-y:hidden;
+    white-space:nowrap;border-right:none;border-bottom:1px solid var(--border);
+    -webkit-overflow-scrolling:touch
+  }
+  .sidebar::-webkit-scrollbar{display:none}
+  .nav-sec{display:none}
+  .nav-item{
+    flex:0 0 auto;margin:0;padding:11px 14px;
+    border-left:none;border-bottom:2px solid transparent;
+    min-height:44px
+  }
+  .nav-item.active{border-left:none;border-bottom-color:var(--accent)}
+
+  .content{overflow:visible;padding:12px;min-width:0}
+  .sh{flex-wrap:wrap;gap:10px;margin-bottom:1rem}
+  .sh>div{min-width:0}
+  .st{font-size:20px;line-height:1.15}
+  #dag-datum{width:100%!important;max-width:none}
+
+  .metrics,.m4,.m3,.m2,.g2,.g3,.g5,.sw-grid{grid-template-columns:1fr!important}
+  .card{padding:1rem;overflow-x:auto}
+  .mwc{padding:.9rem;overflow:hidden}
+  .mwc>div{flex-wrap:wrap!important}
+  .tk-btns{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .orow{grid-template-columns:28px minmax(0,1fr) auto auto auto}
+
+  input,select,textarea{font-size:16px!important}
+  .btn,.tk-btn{min-height:44px}
+  table{min-width:640px}
+  .uz{padding:1rem .75rem}
+}
+
+@media(max-width:430px){
+  .topbar{padding:.55rem .65rem}
+  .logo{max-width:120px;font-size:11px}
+  .content{padding:10px}
+  .card{padding:.85rem}
+  .tk-btns{grid-template-columns:1fr!important}
+  .mv{font-size:20px}
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="topbar">
+  <div class="logo">The Sushi Boutique</div>
+  <span class="role-badge">Manager</span>
+  <div class="topbar-date" id="topbar-date"></div>
+  <span id="fb-dot" title="Databaseverbinding" onclick="alert(fbReady?'\u2713 Verbonden met Firebase - data wordt live gedeeld.':'\u2717 Niet verbonden.\n\nReden: '+(fbErr||'onbekend')+'\n\nOpen de browserconsole (F12 > Console) voor details. Regels beginnend met [Firebase] laten precies zien waar het misgaat.')" style="width:9px;height:9px;border-radius:50%;background:var(--text3);display:inline-block;cursor:pointer"></span>
+</div>
+<div class="main">
+<div class="sidebar">
+  <div class="nav-sec">Dagplanning</div>
+  <div class="nav-item active" onclick="goPg('personeel')">&#x1F9D1;&#x200D;&#x1F373; 1. Personeel</div>
+  <div class="nav-item" onclick="goPg('orders')">&#x1F4CB; 2. Orders</div>
+  <div class="nav-item" onclick="goPg('tijdlijn')">&#x23F1; 3. Tijdlijn</div>
+  <div class="nav-item" onclick="goPg('taken')">&#x2705; 4. Taken (live)</div>
+  <div class="nav-sec">Beheer</div>
+  <div class="nav-item" onclick="goPg('producten')">&#x1F371; Producten</div>
+  <div class="nav-item" onclick="goPg('klanten')">&#x1F465; Klanten</div>
+</div>
+<div class="content">
+
+<!-- PERSONEEL -->
+<div id="pg-personeel" class="page active">
+  <div class="sh">
+    <div><div class="st">Personeel vandaag</div><div class="st-sub">Stel rooster in voordat je orders invoert</div></div>
+    <input type="date" id="dag-datum" style="width:auto;font-size:12px"/>
+  </div>
+  <div class="card">
+    <div id="dag-list"><div class="empty">Nog niemand toegevoegd.</div></div>
+    <div style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem">
+      <div class="ssub">Medewerker toevoegen</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+        <select id="add-s-sel" style="flex:1;min-width:140px"><option value="">Kies medewerker...</option></select>
+        <div><label style="margin-top:0">Start</label><input type="text" inputmode="numeric" maxlength="5" id="add-s-st" value="08:00" style="width:88px"/></div>
+        <div><label style="margin-top:0">Einde</label><input type="text" inputmode="numeric" maxlength="5" id="add-s-en" value="16:00" style="width:88px"/></div>
+        <button class="btn bta" onclick="addDS()" style="align-self:flex-end">+ Voeg toe</button>
+      </div>
+    </div>
+  </div>
+  <div class="metrics m3">
+    <div class="met"><div class="ml">Medewerkers</div><div class="mv" id="ds-n">0</div><div class="ms" id="ds-t"></div></div>
+    <div class="met"><div class="ml">Netto capaciteit</div><div class="mv" id="ds-cap">&#x2014;</div><div class="ms">excl. pauzes</div></div>
+    <div class="met"><div class="ml">Loonkosten</div><div class="mv" id="ds-cost">&#x2014;</div><div class="ms">volledige dienst</div></div>
+  </div>
+  <button class="btn bta" onclick="goPg('orders')">Volgende: orders invoeren &#x2192;</button>
+</div>
+
+<!-- ORDERS -->
+<div id="pg-orders" class="page">
+  <div class="sh"><div><div class="st">Orders vandaag</div><div class="st-sub" id="ord-sum">Voeg eerst personeel toe</div></div></div>
+  <div class="card">
+    <div class="card-title">PDF importeren</div>
+    <div class="uz" id="dz" onclick="document.getElementById('pfi').click()"
+      ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+      ondragleave="this.style.borderColor=''"
+      ondrop="hDrop(event)">
+      <div style="font-size:24px;margin-bottom:6px">&#x1F4C4;</div>
+      <div style="font-size:13px;color:var(--text2)"><strong style="color:var(--text)">Klik of sleep PDF</strong> &#x00B7; Meerdere tegelijk</div>
+      <div id="pdf-load-st" style="font-size:11px;color:var(--text3);margin-top:4px">PDF lezer wordt geladen...</div>
+    </div>
+    <input type="file" id="pfi" accept=".pdf" multiple style="display:none" onchange="hFiles(this.files)"/>
+    <div id="pdf-st" style="font-size:12px;margin-top:6px"></div>
+    <div style="margin-top:12px">
+      <div class="ssub">Of plak tekst uit PDF</div>
+      <textarea id="pdf-paste" rows="4" placeholder="Kopieer tekst uit de PDF (Ctrl+A, Ctrl+C) en plak hier&#10;&#10;Voorbeeld:&#10;Bestelling: 268505&#10;Debiteur: Van Schot Tholen&#10;Debiteur nr 30450166&#10;20 x 1100 Aburi salmon&#10;21 x 1101 Maguro spiced"></textarea>
+      <button class="btn bta" onclick="parsePaste()" style="margin-top:6px">Verwerk tekst &#x2192;</button>
+    </div>
+  </div>
+  <div id="pdf-blk"></div>
+  <div class="card">
+    <div class="card-title">Handmatig toevoegen</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px">
+      <select id="man-cli" style="flex:1;min-width:130px" onchange="popPS()"><option value="">&#x2014; Standaard &#x2014;</option></select>
+      <select id="add-prod" style="flex:2;min-width:150px"></select>
+      <input type="number" id="add-qty" value="1" min="1" style="width:60px"/>
+      <button class="btn bta" onclick="addOL()" style="align-self:flex-end">+ Voeg toe</button>
+    </div>
+    <div id="ord-list"><div class="empty">Nog geen orders.</div></div>
+  </div>
+  <div class="metrics m4">
+    <div class="met"><div class="ml">Eindtijd</div><div class="mv" id="m-end">&#x2014;</div><div class="ms" id="m-min"></div></div>
+    <div class="met"><div class="ml">Omzet</div><div class="mv" id="m-rev">&#x2014;</div><div class="ms" id="m-ic"></div></div>
+    <div class="met"><div class="ml">Arbeidskosten</div><div class="mv" id="m-lab">&#x2014;</div><div class="ms" id="m-ls"></div></div>
+    <div class="met"><div class="ml">Netto winst</div><div class="mv" id="m-pft">&#x2014;</div><div class="ms" id="m-mg"></div></div>
+  </div>
+  <div class="card"><div class="card-title">Benodigde ingredi&#x00EB;nten</div><div id="ing-ov"><div class="empty">Voeg orders toe.</div></div></div>
+  <button class="btn bta" onclick="goPg('tijdlijn')">Volgende: tijdlijn &#x2192;</button>
+</div>
+
+<!-- TIJDLIJN -->
+<div id="pg-tijdlijn" class="page">
+  <div class="sh"><div class="st">Productieplanning</div></div>
+  <div class="card">
+    <div class="g2" style="margin-bottom:12px">
+      <div><label>Rollen vandaag (auto berekend)</label><input type="number" id="tl-r" value="0" min="0" onchange="rTL()"/></div>
+      <div><label>Checkpoint</label><input type="text" inputmode="numeric" maxlength="5" id="tl-cp" value="12:00" onchange="rTL()"/></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ssub">Vaste stappen</div>
+    <div class="g3">
+      <div><label>Rijst wassen (min)</label><input type="number" id="tl-w" value="20" step="0.5" onchange="rTL()"/></div>
+      <div><label>Rijst koken (min)</label><input type="number" id="tl-k" value="50" step="0.5" onchange="rTL()"/></div>
+      <div><label>Overscheppen (min)</label><input type="number" id="tl-sc" value="10" step="0.5" onchange="rTL()"/></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ssub">Variabele stappen (min/rol)</div>
+    <div class="g5">
+      <div><label>Snijden</label><input type="number" id="tl-sn" value="0.8" step="0.1" onchange="rTL()"/></div>
+      <div><label>Rollen</label><input type="number" id="tl-ro" value="1.5" step="0.1" onchange="rTL()"/></div>
+      <div><label>Sushi snijden</label><input type="number" id="tl-s2" value="0.5" step="0.1" onchange="rTL()"/></div>
+      <div><label>Opmaken</label><input type="number" id="tl-op" value="0.8" step="0.1" onchange="rTL()"/></div>
+      <div><label>Verpakken</label><input type="number" id="tl-vp" value="0.6" step="0.1" onchange="rTL()"/></div>
+    </div>
+  </div>
+  <div class="metrics m4">
+    <div class="met"><div class="ml">Eindtijd</div><div class="mv" id="tl-end">&#x2014;</div><div class="ms" id="tl-min"></div></div>
+    <div class="met"><div class="ml">Checkpoint</div><div class="mv" id="tl-cpv">&#x2014;</div><div class="ms" id="tl-cps"></div></div>
+    <div class="met"><div class="ml">Capaciteit</div><div class="mv" id="tl-cap">&#x2014;</div><div class="ms" id="tl-caps"></div></div>
+    <div class="met"><div class="ml">Wachttijd</div><div class="mv" id="tl-idle">&#x2014;</div><div class="ms" id="tl-idls"></div></div>
+  </div>
+  <div id="tl-alerts"></div>
+  <div class="card">
+    <div class="card-title">Tijdlijn per medewerker</div>
+    <div id="tl-tl"><div class="empty">Voeg personeel toe in stap 1.</div></div>
+    <div class="leg">
+      <span><span class="ld" style="background:#22c55e"></span>Wassen</span>
+      <span><span class="ld" style="background:#16a34a"></span>Koken</span>
+      <span><span class="ld" style="background:#15803d"></span>Scheppen</span>
+      <span><span class="ld" style="background:#f59e0b"></span>Snijden</span>
+      <span><span class="ld" style="background:#3b82f6"></span>Rollen</span>
+      <span><span class="ld" style="background:#1d4ed8"></span>Afwerken</span>
+      <span><span class="ld" style="background:#374151"></span>Pauze</span>
+      <span><span class="ld" style="background:#1f2937"></span>Wacht</span>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTEN -->
+<div id="pg-producten" class="page">
+  <div class="sh">
+    <div><div class="st">Producten <span id="pc" style="font-size:14px;font-weight:300;color:var(--text3)"></span></div></div>
+    <button class="btn bta" onclick="showPF()">+ Nieuw product</button>
+  </div>
+  <div id="pform" style="display:none" class="card">
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px" id="pft">Nieuw product</div>
+    <div class="g2">
+      <div><label>Naam</label><input type="text" id="p-n"/></div>
+      <div><label>Categorie</label><select id="p-c"><option>Sushi rollen</option><option>Sushi boxen</option><option>Catering</option><option>Poke Bowls</option><option>Specials</option><option>Overig</option></select></div>
+    </div>
+    <div class="g3">
+      <div><label>Standaardprijs (&#x20AC;)</label><input type="number" id="p-pr" step="0.01" min="0"/></div>
+      <div><label>Kostprijs (&#x20AC;)</label><input type="number" id="p-co" step="0.01" min="0"/></div>
+      <div><label>Arbeidstijd (min)</label><input type="number" id="p-ti" min="0" step="0.5"/></div>
+    </div>
+    <div class="g2">
+      <div><label>Productnr (Cuisinio)</label><input type="text" id="p-nr" placeholder="bijv. 1100"/></div>
+      <div><label>Rollen-telling (voor planning)</label><input type="number" id="p-ro" min="0" step="0.5" placeholder="1"/></div>
+    </div>
+    <div>
+      <label>Ingredi&#x00EB;nten</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="p-ii" placeholder="bijv. zalm, rijst" style="flex:1" onkeydown="if(event.key==='Enter'){addI();event.preventDefault()}"/>
+        <button class="btn" onclick="addI()">Voeg toe</button>
+      </div>
+      <div id="itags" style="margin-top:6px"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn bta" onclick="saveP()">Opslaan</button>
+      <button class="btn" onclick="canPF()">Annuleren</button>
+    </div>
+  </div>
+  <div class="card" id="ptbl"><div id="plist"></div></div>
+</div>
+
+<!-- KLANTEN -->
+<div id="pg-klanten" class="page">
+  <div class="sh">
+    <div class="st">Klanten</div>
+    <button class="btn bta" onclick="showCF()">+ Nieuwe klant</button>
+  </div>
+  <div id="cform" style="display:none" class="card">
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px" id="cft">Nieuwe klant</div>
+    <div class="g3">
+      <div><label>Naam</label><input type="text" id="c-n"/></div>
+      <div><label>Debiteur nr (Cuisinio)</label><input type="text" id="c-nr" placeholder="bijv. 30450166"/></div>
+      <div><label>Type</label><select id="c-ty"><option value="viswinkel">Viswinkel</option><option value="restaurant">Restaurant</option><option value="traiteur">Traiteur</option><option value="overig">Overig</option></select></div>
+    </div>
+    <div style="margin-top:12px"><div class="ssub">Prijzen per product</div><div id="cpri"></div></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn bta" onclick="saveC()">Opslaan</button>
+      <button class="btn" onclick="canCF()">Annuleren</button>
+    </div>
+  </div>
+  <div class="card" id="ctbl"><div id="clist"></div></div>
+</div>
+
+<!-- TAKEN -->
+<div id="pg-taken" class="page">
+  <div class="sh">
+    <div><div class="st">Taken &#x2014; live registratie</div><div class="st-sub">Tik aan = start, nogmaals tikken = stop. “Opstarten + rijst” loopt door naast andere taken.</div></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="expTaskCSV()">&#x2B07; Export taken</button>
+      <button class="btn" onclick="expOrderCSV()">&#x2B07; Export orders</button>
+    </div>
+  </div>
+  <div id="tk-board"><div class="empty">Voeg eerst personeel toe in stap 1.</div></div>
+  <div class="card">
+    <div class="card-title">Orders klaarmelden</div>
+    <div id="tk-orders"><div class="empty">Geen open orders. Importeer orders in stap 2.</div></div>
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+      <div class="ssub">Of batch handmatig klaarmelden</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+        <div style="flex:1;min-width:130px"><label style="margin-top:0">Omschrijving</label><input type="text" id="tk-batch-nm" placeholder="bijv. Schot 268505"/></div>
+        <div><label style="margin-top:0">Rollen</label><input type="number" id="tk-batch-r" value="0" min="0" style="width:80px"/></div>
+        <button class="btn bta" onclick="tkBatchDone()" style="align-self:flex-end">&#x2713; Klaar</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Vandaag gelogd <span id="tk-count" style="font-weight:400;text-transform:none;letter-spacing:0"></span></div>
+    <div id="tk-log"><div class="empty">Nog niets gelogd vandaag.</div></div>
+    <button class="btn btd bts" onclick="tkClearToday()" style="margin-top:10px">Wis registraties van vandaag</button>
+  </div>
+</div>
+
+<!-- STOPWATCH -->
+<div id="pg-stopwatch" class="page">
+  <div class="sh"><div><div class="st">Stopwatch per stap</div><div class="st-sub">Meet de echte tijden &#x2014; na een paar keer zijn de planningscijfers betrouwbaar</div></div></div>
+  <div class="card">
+    <label style="margin-top:0">Aantal rollen bij deze meting</label>
+    <input type="number" id="sw-rc" value="20" min="1" style="width:120px;margin-bottom:4px"/>
+  </div>
+  <div class="sw-grid">
+    <div class="sw-card"><div class="sw-name">Snijden vis + groenten</div><div class="sw-time" id="sw-t0">0:00</div><div style="display:flex;gap:6px;justify-content:center;margin-top:8px"><button class="btn bts" id="sw-b0" onclick="swTog(0)">&#x25B6; Start</button><button class="btn bts" onclick="swLap(0)">Lap</button><button class="btn bts btd" onclick="swRst(0)">Reset</button></div><div class="sw-avg" id="sw-a0">Geen metingen</div><div class="sw-laps" id="sw-l0"></div></div>
+    <div class="sw-card"><div class="sw-name">Matje + rollen</div><div class="sw-time" id="sw-t1">0:00</div><div style="display:flex;gap:6px;justify-content:center;margin-top:8px"><button class="btn bts" id="sw-b1" onclick="swTog(1)">&#x25B6; Start</button><button class="btn bts" onclick="swLap(1)">Lap</button><button class="btn bts btd" onclick="swRst(1)">Reset</button></div><div class="sw-avg" id="sw-a1">Geen metingen</div><div class="sw-laps" id="sw-l1"></div></div>
+    <div class="sw-card"><div class="sw-name">Sushi snijden</div><div class="sw-time" id="sw-t2">0:00</div><div style="display:flex;gap:6px;justify-content:center;margin-top:8px"><button class="btn bts" id="sw-b2" onclick="swTog(2)">&#x25B6; Start</button><button class="btn bts" onclick="swLap(2)">Lap</button><button class="btn bts btd" onclick="swRst(2)">Reset</button></div><div class="sw-avg" id="sw-a2">Geen metingen</div><div class="sw-laps" id="sw-l2"></div></div>
+    <div class="sw-card"><div class="sw-name">Opmaken + verpakken</div><div class="sw-time" id="sw-t3">0:00</div><div style="display:flex;gap:6px;justify-content:center;margin-top:8px"><button class="btn bts" id="sw-b3" onclick="swTog(3)">&#x25B6; Start</button><button class="btn bts" onclick="swLap(3)">Lap</button><button class="btn bts btd" onclick="swRst(3)">Reset</button></div><div class="sw-avg" id="sw-a3">Geen metingen</div><div class="sw-laps" id="sw-l3"></div></div>
+  </div>
+  <div id="sw-res" style="display:none" class="alert aok"></div>
+  <button class="btn bta" id="sw-apply" style="display:none;width:100%;margin-top:.5rem" onclick="applyMeasured()">Gebruik gemeten tijden in planning &#x2191;</button>
+  <div class="card" style="margin-top:1rem"><div class="card-title">Metingen historie</div><div id="sw-hist"><div class="empty">Nog geen metingen.</div></div></div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+// =====================================================================
+// >>> FIREBASE CONFIG <<<
+// Plak hier de config uit je Firebase console (Project instellingen >
+// Algemeen > Je apps > SDK-configuratie). Laat leeg = alleen lokaal.
+// =====================================================================
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBchpHETJajjIhOvHlhJ7orceGuZdgS3mM",
+  authDomain: "b2b-production-planner.firebaseapp.com",
+  databaseURL: "https://b2b-production-planner-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "b2b-production-planner",
+  storageBucket: "b2b-production-planner.firebasestorage.app",
+  messagingSenderId: "816696524060",
+  appId: "1:816696524060:web:fb8dcda98939640bc84ed9"
+};
+
+// ===== DATA =====
+var PRODS = [
+  {nr:'1100',name:'Aburi salmon',cat:'Sushi rollen',price:8.87,cost:3.015,labor:2.5,rolls:1,ing:['Nori','Rijst','Avocado','Komkommer','Zalm','Tempura crumble','Wasabimayo','Azijn mix']},
+  {nr:'1101',name:'Maguro spiced',cat:'Sushi rollen',price:9.62,cost:3.268,labor:2.5,rolls:1,ing:['Nori','Rijst','Avocado','Tonijn','Komkommer','Spicy jap mayo','Gebakken ui','Azijn mix']},
+  {nr:'1102',name:'Rainbow',cat:'Sushi rollen',price:9.87,cost:2.105,labor:2.5,rolls:1,ing:['Nori','Rijst','Krab','Avocado','Komkommer','Zalm','Tonijn','Wasabi mayo','Azijn mix']},
+  {nr:'1103',name:'California',cat:'Sushi rollen',price:8.87,cost:1.014,labor:2.5,rolls:1,ing:['Nori','Rijst','Krab','Avocado','Mango saus','Komkommer','Oranje masago','Azijn mix']},
+  {nr:'1104',name:'Beeftataki rol',cat:'Sushi rollen',price:9.00,cost:1.701,labor:2.5,rolls:1,ing:['Nori','Rijst','Beeftataki','Komkommer','Snowcrab','Avocado','Bosui','Azijn mix']},
+  {nr:'202028',name:'Salmon Sensation',cat:'Sushi rollen',price:9.00,cost:1.69,labor:2.5,rolls:1,ing:['Nori','Rijst','Zalm','Avocado','Azijn mix']},
+  {nr:'202029',name:'Unagi roll',cat:'Sushi rollen',price:8.75,cost:2.932,labor:2.5,rolls:1,ing:['Nori','Rijst','Paling','Unagi saus','Snowcrab','Avocado','Bosui','Azijn mix']},
+  {nr:'202031',name:'Soja Saus per zakje',cat:'Overig',price:0.25,cost:0,labor:0.1,rolls:0,ing:['Soja saus']},
+  {nr:'1201',name:'Sushi box 4 rollen',cat:'Sushi boxen',price:37.50,cost:9.41,labor:10,rolls:4,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Azijn mix']},
+  {nr:'1203',name:'Sushi box 5 rollen',cat:'Sushi boxen',price:47.50,cost:12.95,labor:12.5,rolls:5,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Sesam','Azijn mix']},
+  {nr:'1202',name:'Sushi box 6 rollen',cat:'Sushi boxen',price:56.00,cost:17.47,labor:15,rolls:6,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Paling','Avocado','Komkommer','Sesam','Azijn mix']},
+  {nr:'1300',name:'Tasting box 16 st.',cat:'Sushi boxen',price:17.50,cost:5.027,labor:5,rolls:8,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Azijn mix']},
+  {nr:'1301',name:'Tasting box 14 st. (klein)',cat:'Sushi boxen',price:12.50,cost:4.118,labor:3.75,rolls:7,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Azijn mix']},
+  {nr:'1302',name:'Tasting box 10 st.',cat:'Sushi boxen',price:11.50,cost:3.124,labor:3.75,rolls:5,ing:['Nori','Rijst','Zalm','Krab','Komkommer','Avocado','Azijn mix']},
+  {nr:'1303',name:'Nigiri box 5 st.',cat:'Sushi boxen',price:8.00,cost:2.775,labor:1.5,rolls:2.5,ing:['Rijst','Zalm','Tonijn']},
+  {nr:'2101',name:'Catering | Aburi salmon',cat:'Catering',price:8.00,cost:3.015,labor:2.5,rolls:1,ing:['Nori','Rijst','Avocado','Komkommer','Zalm','Tempura crumble','Wasabimayo','Azijn mix']},
+  {nr:'2102',name:'Catering | Maguro spiced',cat:'Catering',price:8.25,cost:3.268,labor:2.5,rolls:1,ing:['Nori','Rijst','Avocado','Tonijn','Komkommer','Spicy jap mayo','Azijn mix']},
+  {nr:'2103',name:'Catering | Rainbow',cat:'Catering',price:8.50,cost:2.105,labor:2.5,rolls:1,ing:['Nori','Rijst','Krab','Avocado','Komkommer','Zalm','Tonijn','Azijn mix']},
+  {nr:'2104',name:'Catering | California',cat:'Catering',price:8.00,cost:1.014,labor:2.5,rolls:1,ing:['Nori','Rijst','Krab','Avocado','Mango saus','Komkommer','Azijn mix']},
+  {nr:'2105',name:'Catering | Vega',cat:'Catering',price:8.00,cost:0,labor:2.5,rolls:1,ing:['Nori','Rijst','Avocado','Komkommer','Azijn mix']},
+  {nr:'202030',name:'Vega roll',cat:'Catering',price:8.00,cost:0,labor:2.5,rolls:1,ing:['Nori','Rijst','Avocado','Komkommer','Azijn mix']},
+  {nr:'2201',name:'Catering | Nigiri zalm',cat:'Catering',price:1.00,cost:0.555,labor:0.3,rolls:0.5,ing:['Rijst','Zalm']},
+  {nr:'2202',name:'Catering | Nigiri tonijn',cat:'Catering',price:1.10,cost:0.555,labor:0.3,rolls:0.5,ing:['Rijst','Tonijn']},
+  {nr:'2203',name:'Catering | Nigiri unagi',cat:'Catering',price:1.00,cost:0.555,labor:0.3,rolls:0.5,ing:['Rijst','Paling','Unagi saus']},
+  {nr:'2204',name:'Catering | Nigiri ebi gestoomd',cat:'Catering',price:1.00,cost:0.555,labor:0.3,rolls:0.5,ing:['Rijst','Garnaal']},
+  {nr:'2000',name:'Poke Bowl Zalm',cat:'Poke Bowls',price:6.50,cost:3.369,labor:1.5,rolls:0,ing:['Zalm','Rijst','Edamame','Avocado','Komkommer','Gebakken ui','Masago','Zeewier','Azijn mix']},
+  {nr:'2010',name:'Poke Bowl Tonijn',cat:'Poke Bowls',price:7.50,cost:4.439,labor:1.5,rolls:0,ing:['Tonijn','Rijst','Edamame','Avocado','Komkommer','Mango','Masago','Zeewier','Azijn mix']},
+  {nr:'202025',name:'Paasbox 4 rollen',cat:'Specials',price:40.00,cost:9.41,labor:10,rolls:4,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Azijn mix']},
+  {nr:'202026',name:'Tasting box 16 st. Valentijnsdag',cat:'Specials',price:19.50,cost:5.027,labor:5,rolls:8,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Azijn mix']},
+  {nr:'202027',name:'Sushi box 4 rollen Valentijnsdag',cat:'Specials',price:37.50,cost:9.41,labor:10,rolls:4,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Avocado','Komkommer','Azijn mix']},
+  {nr:'25012',name:'Luxe-kerst-schotel 40 st.',cat:'Specials',price:39.75,cost:0,labor:12.5,rolls:20,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Paling','Avocado','Komkommer','Azijn mix']},
+  {nr:'24012',name:'Luxe-kerst-schotel 53 st.',cat:'Specials',price:58.00,cost:0,labor:16.5,rolls:26.5,ing:['Nori','Rijst','Zalm','Tonijn','Krab','Paling','Avocado','Komkommer','Azijn mix']}
+];
+var CLIENTS = [
+  {name:'Schmidt Zeevis',debnr:'3044010',type:'viswinkel',prices:{'Aburi salmon':8.87,'Maguro spiced':9.62,'Rainbow':9.87,'California':8.87,'Beeftataki rol':9.00,'Sushi box 4 rollen':37.50,'Sushi box 5 rollen':47.50,'Sushi box 6 rollen':56.00,'Tasting box 16 st.':19.50,'Tasting box 14 st. (klein)':13.99,'Tasting box 10 st.':12.50}},
+  {name:'Schmidt Zeevis Winkel',debnr:'3045010',type:'viswinkel',prices:{'Aburi salmon':8.87,'Maguro spiced':9.62,'Rainbow':9.87,'California':8.87,'Beeftataki rol':9.00,'Sushi box 4 rollen':37.50,'Sushi box 5 rollen':47.50,'Sushi box 6 rollen':56.00,'Tasting box 16 st.':19.50,'Tasting box 14 st. (klein)':13.99,'Tasting box 10 st.':12.50}},
+  {name:'Van Den Boogaart',debnr:'033332',type:'viswinkel',prices:{'Aburi salmon':8.75,'Maguro spiced':9.00,'Rainbow':9.25,'California':8.50,'Salmon Sensation':9.00,'Unagi roll':8.75,'Tasting box 16 st.':17.50,'Tasting box 14 st. (klein)':12.50,'Tasting box 10 st.':11.50,'Nigiri box 5 st.':8.00,'Poke Bowl Zalm':6.50,'Poke Bowl Tonijn':7.50}},
+  {name:'Van Schot Tholen',debnr:'30450166',type:'viswinkel',prices:{'Aburi salmon':8.00,'Maguro spiced':8.50,'Rainbow':8.50,'California':7.25}},
+  {name:'Vishandel Rokkeveen',debnr:'3045999',type:'viswinkel',prices:{}},
+  {name:'Vispoort Hoek van Holland',debnr:'30453155',type:'viswinkel',prices:{}},
+  {name:'Visspeciaalzaak R & L de Graaf',debnr:'09888',type:'viswinkel',prices:{}},
+  {name:'P&M Seafood',debnr:'DB10007',type:'viswinkel',prices:{}},
+  {name:'Vis & traiteur Jeroen Vijverberg',debnr:'267125',type:'traiteur',prices:{}},
+  {name:'Z of Z',debnr:'',type:'restaurant',prices:{'Aburi salmon':8.99,'Maguro spiced':9.75,'Rainbow':8.75,'California':8.50,'Beeftataki rol':7.50}},
+  {name:'Z of Z (basis rollen)',debnr:'',type:'restaurant',prices:{'Aburi salmon':7.99,'Maguro spiced':8.75,'Rainbow':7.75,'California':6.75,'Beeftataki rol':7.50}}
+];
+var STAFF_DB = [
+  {name:'Romy',type:'vast',wage:23.00,start:'08:00',end:'16:00',factor:1.0,pauses:[{time:'12:00',dur:30}]},
+  {name:'Annemieke',type:'vast',wage:23.00,start:'08:00',end:'16:00',factor:1.0,pauses:[{time:'12:00',dur:30}]},
+  {name:'Medewerker 1',type:'flex',wage:19.65,start:'08:00',end:'16:00',factor:1.0,pauses:[{time:'12:00',dur:30}]},
+  {name:'Medewerker 2',type:'flex',wage:19.65,start:'08:00',end:'16:00',factor:1.0,pauses:[{time:'12:00',dur:30}]},
+  {name:'Medewerker 3',type:'flex',wage:19.65,start:'08:30',end:'12:00',factor:1.0,pauses:[]}
+];
+// PDF-klantherkenning gebruikt clients[] (debnr + naam)
+
+// ===== STATE =====
+var PK='tsb6_p', CK='tsb6_c', SK='tsb6_s', DSK='tsb6_ds', OK='tsb6_o', SWK='tsb5_sw';
+var prods = JSON.parse(localStorage.getItem(PK) || 'null') || PRODS.map(function(p){return Object.assign({},p);});
+var clients = JSON.parse(localStorage.getItem(CK) || 'null') || CLIENTS.map(function(c){return Object.assign({},c,{prices:Object.assign({},c.prices)});});
+var staffDB = JSON.parse(localStorage.getItem(SK) || 'null') || STAFF_DB.map(function(s){return Object.assign({},s,{pauses:s.pauses.map(function(p){return Object.assign({},p);})});});
+var dagS = JSON.parse(localStorage.getItem(DSK) || '[]');
+var orders = JSON.parse(localStorage.getItem(OK) || '[]');
+var pdfOrds = [];
+var ePI = -1, eCI = -1, tmpI = [];
+var swHistory = JSON.parse(localStorage.getItem(SWK) || '[]');
+var sw = [{r:false,s:null,e:0,laps:[],iv:null},{r:false,s:null,e:0,laps:[],iv:null},{r:false,s:null,e:0,laps:[],iv:null},{r:false,s:null,e:0,laps:[],iv:null}];
+
+// ===== HELPERS =====
+function sv() { localStorage.setItem(PK,JSON.stringify(prods)); localStorage.setItem(CK,JSON.stringify(clients)); localStorage.setItem(SK,JSON.stringify(staffDB)); fbSet('tsb/catalog/prods',prods); fbSet('tsb/catalog/clients',clients); }
+function svDay() { localStorage.setItem(DSK,JSON.stringify(dagS)); localStorage.setItem(OK,JSON.stringify(orders)); var d='tsb/days/'+todayStr(); fbSet(d+'/staff',dagS); fbSet(d+'/orders',orders); fbSet(d+'/pdfOrds',pdfOrds); }
+function normT(v){v=String(v||'').replace(/[^0-9:]/g,'');if(!v)return '';if(v.indexOf(':')<0){if(v.length<=2)v=v+':00';else v=v.slice(0,v.length-2)+':'+v.slice(-2);}var p=v.split(':');var h=parseInt(p[0])||0,m=parseInt(p[1])||0;if(h>23)h=23;if(m>59)m=59;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');}
+function toM(t) { t=normT(t)||'00:00'; var p=t.split(':'); return parseInt(p[0])*60+parseInt(p[1]); }
+function toT(m) { m=Math.max(0,Math.round(m)); return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
+function hS(m) { m=Math.round(m); return m>=60 ? Math.floor(m/60)+'u'+(m%60?' '+m%60+'min':'') : m+'min'; }
+function el(id) { return document.getElementById(id); }
+function gCP(ci,pn,df) { if(ci<0||ci>=clients.length) return df; var p=clients[ci].prices||{}; return p[pn]!==undefined?p[pn]:df; }
+function gCI() { var v=el('man-cli').value; return v===''?-1:parseInt(v); }
+function bBlk(w) {
+  var sM=toM(w.start), eM=toM(w.end);
+  var p=(w.pauses||[]).filter(function(x){return toM(x.time)>=sM&&toM(x.time)<eM;}).sort(function(a,b){return toM(a.time)-toM(b.time);});
+  var b=[],c=sM;
+  p.forEach(function(x){var ps=toM(x.time),pe=ps+(x.dur||30);if(ps>c)b.push({s:c,e:ps,t:'work'});b.push({s:ps,e:Math.min(pe,eM),t:'pause'});c=Math.min(pe,eM);});
+  if(c<eM)b.push({s:c,e:eM,t:'work'});
+  return b;
+}
+function wM(w,t0,t1) { return bBlk(w).filter(function(b){return b.t==='work';}).reduce(function(a,b){var s=Math.max(b.s,t0),e=Math.min(b.e,t1);return a+(e>s?e-s:0);},0); }
+function cN(w) { return bBlk(w).filter(function(b){return b.t==='work';}).reduce(function(a,b){return a+(b.e-b.s);},0); }
+
+// ===== FIREBASE SYNC =====
+var fbReady=false, fbApplying=false, fbdb=null, curPg='personeel', fbErr='';
+function setFbDot(on){var d=el('fb-dot');if(d)d.style.background=on?'var(--green)':(fbErr?'var(--red)':'var(--text3)');if(d)d.title=on?'Live verbonden \u2013 data wordt gedeeld':'Lokaal'+(fbErr?' \u2013 '+fbErr:'');}
+function fbSet(path,val){if(!fbReady||fbApplying)return;try{fbdb.ref(path).set(JSON.stringify(val));}catch(e){console.warn('fbSet',e);}}
+function fbParse(snap){try{var v=snap.val();return v?JSON.parse(v):null;}catch(e){return null;}}
+function refreshPg(){goPg(curPg);}
+function fbListen(){
+  var day='tsb/days/'+todayStr();
+  fbdb.ref(day+'/staff').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;dagS=v;localStorage.setItem(DSK,JSON.stringify(dagS));fbApplying=false;refreshPg();}});
+  fbdb.ref(day+'/orders').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;orders=v;localStorage.setItem(OK,JSON.stringify(orders));fbApplying=false;refreshPg();}});
+  fbdb.ref(day+'/pdfOrds').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;pdfOrds=v;fbApplying=false;refreshPg();}});
+  fbdb.ref('tsb/logs/taskLog').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;taskLog=v;localStorage.setItem(TLK,JSON.stringify(taskLog));fbApplying=false;if(curPg==='taken')refreshPg();}});
+  fbdb.ref('tsb/logs/orderLog').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;orderLog=v;localStorage.setItem(OLK,JSON.stringify(orderLog));fbApplying=false;if(curPg==='taken')refreshPg();}});
+  fbdb.ref('tsb/catalog/prods').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;prods=v;localStorage.setItem(PK,JSON.stringify(prods));fbApplying=false;refreshPg();}});
+  fbdb.ref('tsb/catalog/clients').on('value',function(s){var v=fbParse(s);if(v){fbApplying=true;clients=v;localStorage.setItem(CK,JSON.stringify(clients));fbApplying=false;refreshPg();}});
+}
+function fbInitialPush(){
+  var d='tsb/days/'+todayStr();
+  fbdb.ref(d+'/staff').once('value').then(function(s){if(!s.val()&&dagS.length){fbSet(d+'/staff',dagS);}});
+  fbdb.ref(d+'/orders').once('value').then(function(s){if(!s.val()&&orders.length){fbSet(d+'/orders',orders);}});
+  fbdb.ref('tsb/catalog/prods').once('value').then(function(s){if(!s.val()){fbSet('tsb/catalog/prods',prods);fbSet('tsb/catalog/clients',clients);}});
+}
+function fbInit(){
+  console.log('[Firebase] init gestart');
+  if(!FIREBASE_CONFIG.apiKey||!FIREBASE_CONFIG.databaseURL){fbErr='geen config ingevuld';console.warn('[Firebase]',fbErr);setFbDot(false);return;}
+  var s1=document.createElement('script');
+  s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+  s1.onload=function(){
+    console.log('[Firebase] app-sdk geladen');
+    var s2=document.createElement('script');
+    s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js';
+    s2.onload=function(){
+      console.log('[Firebase] database-sdk geladen, verbinden...');
+      try{
+        firebase.initializeApp(FIREBASE_CONFIG);
+        fbdb=firebase.database();
+        fbdb.ref('tsb/_status').set(JSON.stringify({verbonden:new Date().toISOString(),app:'MANAGER'}))
+          .then(function(){
+            console.log('[Firebase] SCHRIJVEN GELUKT - verbinding werkt');
+            fbReady=true;fbErr='';setFbDot(true);fbListen();fbInitialPush();
+          })
+          .catch(function(werr){
+            fbErr='schrijven geweigerd: '+(werr&&werr.message?werr.message:werr);
+            console.error('[Firebase] SCHRIJVEN GEWEIGERD (check databaseregels):',werr);
+            setFbDot(false);
+          });
+      }catch(e){fbErr='init fout: '+(e&&e.message?e.message:e);console.error('[Firebase] init fout',e);setFbDot(false);}
+    };
+    s2.onerror=function(){fbErr='database-sdk kon niet laden (geblokkeerd door adblocker/netwerk?)';console.error('[Firebase]',fbErr);setFbDot(false);};
+    document.head.appendChild(s2);
+  };
+  s1.onerror=function(){fbErr='firebase-sdk kon niet laden (geblokkeerd door adblocker/netwerk?)';console.error('[Firebase]',fbErr);setFbDot(false);};
+  document.head.appendChild(s1);
+}
+fbInit();
+
+// ===== NAVIGATION =====
+function goPg(p) {
+  curPg=p;
+  document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(x){x.classList.remove('active');});
+  var pg = el('pg-'+p);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(x){
+    if(x.getAttribute('onclick') && x.getAttribute('onclick').indexOf("'"+p+"'")>=0) x.classList.add('active');
+  });
+  if(p==='personeel') rDS();
+  if(p==='orders') { popCS(); popPS(); rPdfO(); rOL(); uM(); uOSS(); }
+  if(p==='tijdlijn') { calcRolls(); rTL(); }
+  if(p==='producten') rPL();
+  if(p==='klanten') rCL();
+  if(p==='stopwatch') rSwHist();
+  if(p==='taken') rTk();
+}
+
+// ===== DATE =====
+el('topbar-date').textContent = new Date().toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long'});
+el('dag-datum').value = new Date().toISOString().split('T')[0];
+
+// ===== DAGPERSONEEL =====
+function rDS() {
+  var sel=el('add-s-sel');
+  sel.innerHTML='<option value="">Kies medewerker...</option>';
+  staffDB.forEach(function(s,i){
+    if(!dagS.find(function(d){return d.name===s.name;}))
+      sel.innerHTML+='<option value="'+i+'">'+s.name+' ('+( s.type==='vast'?'Vast':'Flex')+' \u00B7 \u20AC'+s.wage+'/u)</option>';
+  });
+  var dlist=el('dag-list');
+  if(!dagS.length){dlist.innerHTML='<div class="empty">Nog niemand toegevoegd.</div>';el('ds-n').textContent='0';el('ds-cap').textContent='\u2014';el('ds-cost').textContent='\u2014';el('ds-t').textContent='';return;}
+  dlist.innerHTML=dagS.map(function(w,i){
+    var net=cN(w);
+    var pcs=(w.pauses||[]).map(function(p,pi){
+      return '<div class="pc"><input type="text" inputmode="numeric" maxlength="5" value="'+p.time+'" style="width:66px;font-size:12px;border:none;background:transparent;color:var(--text)" onchange="dagS['+i+'].pauses['+pi+'].time=normT(this.value);svDay();rDS();uM()"/><input type="number" value="'+p.dur+'" min="5" max="120" step="5" style="width:36px;font-size:12px" onchange="dagS['+i+'].pauses['+pi+'].dur=parseInt(this.value)||30;svDay();rDS();uM()"/><span style="font-size:11px;color:var(--text3)">min</span><button onclick="dagS['+i+'].pauses.splice('+pi+',1);svDay();rDS();uM()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:13px;padding:0">&times;</button></div>';
+    }).join('');
+    return '<div class="mwc"><div style="display:flex;align-items:flex-start;gap:12px"><div class="av">'+w.name.substring(0,2).toUpperCase()+'</div><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px"><span style="font-weight:500;font-size:14px">'+w.name+'</span><span class="bdg '+(w.type==='vast'?'bg':'ba')+'">'+(w.type==='vast'?'Vast':'Flex')+'</span><span style="font-size:12px;color:var(--text3)">\u20AC'+w.wage+'/u</span></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><input type="text" inputmode="numeric" maxlength="5" value="'+w.start+'" style="width:80px;font-size:12px" onchange="dagS['+i+'].start=normT(this.value);svDay();rDS();uM()"/><span style="font-size:12px;color:var(--text3)">tot</span><input type="text" inputmode="numeric" maxlength="5" value="'+w.end+'" style="width:80px;font-size:12px" onchange="dagS['+i+'].end=normT(this.value);svDay();rDS();uM()"/><span style="font-size:12px;color:var(--text3)">'+hS(net)+' netto</span></div><div style="display:flex;align-items:center;flex-wrap:wrap;gap:3px"><span style="font-size:11px;color:var(--text3);margin-right:3px">Pauzes:</span>'+pcs+'<button class="btn bts" onclick="dagS['+i+'].pauses.push({time:\'12:00\',dur:30});svDay();rDS();uM()">+ Pauze</button></div></div><button class="btn bts btd" onclick="dagS.splice('+i+',1);svDay();rDS();uM()">&times;</button></div></div>';
+  }).join('');
+  var tn=dagS.reduce(function(a,w){return a+cN(w);},0);
+  var tc=dagS.reduce(function(a,w){return a+w.wage*(cN(w)/60);},0);
+  var nv=dagS.filter(function(w){return w.type==='vast';}).length;
+  var ns=dagS.filter(function(w){return w.type!=='vast';}).length;
+  el('ds-n').textContent=dagS.length;
+  el('ds-t').textContent=nv+' vast \u00B7 '+ns+' flex';
+  el('ds-cap').textContent=hS(tn);
+  el('ds-cost').textContent='\u20AC'+tc.toFixed(2);
+}
+function addDS() {
+  var idx=parseInt(el('add-s-sel').value);
+  if(isNaN(idx)) return;
+  var b=staffDB[idx];
+  if(dagS.find(function(d){return d.name===b.name;})){alert(b.name+' staat al in het rooster.');return;}
+  dagS.push(Object.assign({},b,{start:normT(el('add-s-st').value)||b.start,end:normT(el('add-s-en').value)||b.end,pauses:b.pauses.map(function(p){return Object.assign({},p);})}));
+  el('add-s-sel').value='';
+  svDay();rDS();uM();
+}
+function uOSS() {
+  el('ord-sum').textContent = dagS.length ? dagS.length+' medewerkers: '+dagS.map(function(w){return w.name;}).join(', ') : 'Voeg eerst personeel toe (stap 1)';
+}
+
+// ===== PDF =====
+var pdfReady = false;
+(function(){
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  s.onload=function(){
+    if(typeof pdfjsLib!=='undefined'){
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      pdfReady=true;
+      el('pdf-load-st').textContent='PDF lezer klaar';
+      setTimeout(function(){el('pdf-load-st').style.display='none';},2000);
+    }
+  };
+  s.onerror=function(){el('pdf-load-st').textContent='Offline \u2013 gebruik tekst plakken hieronder';};
+  document.head.appendChild(s);
+})();
+
+function pdfNorm(v) {
+  return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+}
+function pdfNormName(v) {
+  return String(v||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+}
+function findPdfClient(nr,nmOrText) {
+  var q=pdfNorm(nr);
+  if(q){
+    var byNr=clients.find(function(cl){return cl.debnr&&pdfNorm(cl.debnr)===q;});
+    if(byNr)return byNr;
+  }
+  var hay=pdfNormName(nmOrText);
+  if(!hay)return null;
+  var exact=clients.find(function(cl){return cl.name&&pdfNormName(cl.name)===hay;});
+  if(exact)return exact;
+  var matches=clients.filter(function(cl){
+    if(!cl.name)return false;
+    var cn=pdfNormName(cl.name);
+    return cn.length>=4&&(hay.indexOf(cn)>=0||cn.indexOf(hay)>=0);
+  }).sort(function(a,b){return pdfNormName(b.name).length-pdfNormName(a.name).length;});
+  return matches.length?matches[0]:null;
+}
+function getPdfPrice(c,nr) { var p=prods.find(function(p){return p.nr===nr;}); if(!p) return 0; if(c&&c.prices&&c.prices[p.name]!==undefined) return c.prices[p.name]; return p.price; }
+function parsePdfText(text) {
+  text=String(text||'').replace(/\u00a0/g,' ').replace(/\r/g,'\n').replace(/\n{2,}/g,'\n');
+  var bM=text.match(/bestelling[^0-9]*(\d+)/i);
+  var dM=text.match(/^debiteur(?![ \t]+nr\b)[ \t]*:?[ \t]+(.+)$/im);
+  var nM=text.match(/debiteur[ \t]+nr[ \t]*:?[ \t]*([A-Z0-9-]+)/i);
+  var ldM=text.match(/leverdatum[ \t]*:?[ \t]*([0-9\-\/\.]+)/i);
+  var dNm=dM?dM[1].trim():'Onbekend', dNr=nM?nM[1].trim():'';
+
+  // Eerst debiteurnummer, daarna de volledige PDF-tekst gebruiken voor naamherkenning.
+  // Daardoor werken meerdere klanten, ook met alfanumerieke nummers zoals DB10007.
+  var cli=findPdfClient(dNr,text);
+  if(cli){dNm=cli.name; if(!dNr)dNr=cli.debnr||'';}
+
+  var lns=[];
+  function addPdfLine(qty,prod){
+    qty=parseInt(qty,10);
+    if(!prod||!qty||qty<=0||qty>=10000)return;
+    var ex=lns.find(function(l){return l.nr===prod.nr;});
+    if(ex)ex.qty+=qty;
+    else lns.push({qty:qty,nr:prod.nr,prod:prod,price:getPdfPrice(cli,prod.nr)});
+  }
+
+  // Primaire methode: kijk per orderregel naar "aantal x" en zoek daarna een
+  // bestaand productnummer ergens op diezelfde regel. Dit accepteert o.a.:
+  // 6 x 1 Rol 1100 Aburi salmon
+  // 20 x 1100 Aburi salmon
+  // 2 x 4 Rollen 1201 Sushi box 4 rollen
+  text.split('\n').forEach(function(line){
+    var qM=line.match(/\b(\d+)\s*(?:x|×)\s*/i);
+    if(!qM)return;
+    var prod=prods.find(function(p){
+      if(!p.nr)return false;
+      var esc=String(p.nr).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      return new RegExp('(^|\\D)'+esc+'(?!\\d)').test(line);
+    });
+    if(prod)addPdfLine(qM[1],prod);
+  });
+
+  // Fallback voor PDF's waarvan de tekst niet netjes per regel wordt opgebouwd.
+  if(!lns.length){
+    var patterns=[
+      /\b(\d+)\s*(?:x|×)\s*\d+(?:[.,]\d+)?\s*(?:rol(?:len)?|st(?:uks?)?|stuk|box(?:en)?|bak(?:ken)?|zak(?:jes?)?|portie(?:s)?)\s*(\d{4,6})\b/gi,
+      /\b(\d+)\s*(?:x|×)\s*(?:rol(?:len)?\s*)?(\d{4,6})\b/gi
+    ];
+    patterns.forEach(function(re){
+      var m;
+      while((m=re.exec(text))!==null){
+        var prod=prods.find(function(p){return p.nr===m[2];});
+        if(prod)addPdfLine(m[1],prod);
+      }
+    });
+  }
+
+  return {id:Date.now()+Math.random(),bestelling:bM?bM[1]:'?',dNm:dNm,dNr:dNr,lev:ldM?ldM[1]:'',cli:cli,lns:lns,col:false,dl:''};
+}
+function parsePaste() {
+  var txt=el('pdf-paste').value.trim();
+  if(!txt){alert('Plak eerst tekst in het veld.');return;}
+  var o=parsePdfText(txt);
+  if(!o||!o.lns.length){el('pdf-st').innerHTML='<span style="color:var(--red)">Geen orders herkend. Controleer het formaat.</span>';return;}
+  applyPdfOrder(o);
+  el('pdf-paste').value='';
+}
+async function exPDF(buf) {
+  var cands=[];
+  if(!pdfReady){for(var w=0;w<40;w++){await new Promise(function(r){setTimeout(r,100);});if(pdfReady)break;}}
+  if(pdfReady&&typeof pdfjsLib!=='undefined'){
+    try{
+      var pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise;
+      var txt='';
+      for(var i=1;i<=pdf.numPages;i++){
+        var pg=await pdf.getPage(i);
+        var ct=await pg.getTextContent();
+        var its=ct.items.slice().sort(function(a,b){var d=Math.round(b.transform[5])-Math.round(a.transform[5]);return d?d:a.transform[4]-b.transform[4];});
+        var ln={};
+        its.forEach(function(it){var y=Math.round(it.transform[5]);if(!ln[y])ln[y]=[];ln[y].push({x:it.transform[4],t:it.str});});
+        Object.keys(ln).sort(function(a,b){return b-a;}).forEach(function(y){var lt=ln[y].sort(function(a,b){return a.x-b.x;}).map(function(i){return i.t;}).join(' ').trim();if(lt)txt+=lt+'\n';});
+      }
+      if(txt.trim().length>10) cands.push(txt);
+    }catch(e){console.warn('pdfjs err',e);lastPdfErr='PDF.js: '+(e&&e.message?e.message:String(e));}
+  } else {
+    lastPdfErr='PDF-lezer kon niet laden (geen internet?)';
+  }
+  var bytes=new Uint8Array(buf);
+  try{
+    var txtF=await pdfInflateText(bytes);
+    if(txtF&&txtF.replace(/\s/g,'').length>10) cands.push(txtF);
+  }catch(e2){console.warn('inflate err',e2);}
+  var latin=new TextDecoder('latin1').decode(bytes);
+  var txt2='',run='';
+  for(var j=0;j<bytes.length;j++){var c=bytes[j];if(c>=32&&c<=126){run+=String.fromCharCode(c);}else{if(run.length>4)txt2+=run+'\n';run='';}}
+  cands.push(txt2+'\n'+latin);
+  return cands;
+}
+function pdfUnesc(s){return s.replace(/\\([()\\])/g,'$1').replace(/\\n/g,' ').replace(/\\r/g,' ').replace(/\\t/g,' ');}
+async function pdfInflateText(bytes){
+  if(typeof DecompressionStream==='undefined') return '';
+  var latin=new TextDecoder('latin1').decode(bytes);
+  var out='';var idx=0;
+  while(true){
+    var s=latin.indexOf('stream',idx); if(s<0)break;
+    if(latin.substring(s-3,s)==='end'){idx=s+6;continue;}
+    var ds=s+6;
+    if(latin.charAt(ds)==='\r')ds++;
+    if(latin.charAt(ds)==='\n')ds++;
+    var e=latin.indexOf('endstream',ds); if(e<0)break;
+    var chunk=bytes.subarray(ds,e);
+    try{
+      var st=new Blob([chunk]).stream().pipeThrough(new DecompressionStream('deflate'));
+      var ab=await new Response(st).arrayBuffer();
+      var t=new TextDecoder('latin1').decode(ab);
+      var m,re1=/\(((?:[^()\\]|\\.)*)\)\s*Tj/g;
+      while((m=re1.exec(t))!==null){var v1=pdfUnesc(m[1]).trim();if(v1)out+=v1+'\n';}
+      var re2=/\[((?:[^\[\]\\]|\\.)*)\]\s*TJ/g;
+      while((m=re2.exec(t))!==null){
+        var inner=m[1],m2,re3=/\(((?:[^()\\]|\\.)*)\)/g,line='';
+        while((m2=re3.exec(inner))!==null){line+=pdfUnesc(m2[1]);}
+        line=line.trim();
+        if(line)out+=line+'\n';
+      }
+    }catch(err){}
+    idx=e+9;
+  }
+  return out;
+}
+function applyPdfOrder(o) {
+  pdfOrds.push(o);
+  o.lns.forEach(function(l){
+    var idx=prods.findIndex(function(p){return p.nr===l.nr;});
+    if(idx>=0){var ex=orders.find(function(x){return x.pi===idx;});if(ex)ex.qty+=l.qty;else orders.push({pi:idx,qty:l.qty,cp:l.price});}
+  });
+  svDay();rPdfO();rOL();uM();
+}
+var lastPdfErr='';
+async function hFiles(files) {
+  var st=el('pdf-st');
+  var fa=Array.from(files).filter(function(f){return f.name.endsWith('.pdf')||f.type==='application/pdf';});
+  if(!fa.length) return;
+  st.innerHTML='<span style="color:var(--text3)">&#x23F3; Inlezen...</span>';
+  lastPdfErr='';
+  var ok=0;
+  for(var i=0;i<fa.length;i++){
+    var o=await new Promise(function(resolve){
+      var f=fa[i];
+      var rd=new FileReader();
+      rd.onload=async function(e){
+        try{
+          var cands=await exPDF(e.target.result);
+          var o=null;
+          for(var ci=0;ci<cands.length;ci++){
+            console.log('PDF kandidaat '+(ci+1)+' ('+cands[ci].length+' chars):',cands[ci].substring(0,200));
+            var c2=parsePdfText(cands[ci]);
+            if(c2.lns.length){o=c2;break;}
+          }
+          if(!o&&!lastPdfErr)lastPdfErr='tekst gelezen maar geen orderregels gevonden';
+          resolve(o);
+        }catch(err){
+          lastPdfErr=err&&err.message?err.message:String(err);
+          console.error('PDF fout:',err);
+          resolve(null);
+        }
+      };
+      rd.onerror=function(){lastPdfErr='bestand kon niet gelezen worden';resolve(null);};
+      rd.readAsArrayBuffer(f);
+    });
+    if(o&&o.lns.length>0){applyPdfOrder(o);ok++;}
+  }
+  el('pfi').value='';
+  if(ok>0){st.innerHTML='<span style="color:var(--green)">\u2713 '+ok+' order'+(ok>1?'s':'')+' ingelezen</span>';}
+  else{st.innerHTML='<span style="color:var(--red)">Niet herkend'+(lastPdfErr?' \u2014 '+lastPdfErr:'')+'. Gebruik tekst plakken hieronder.</span>';}
+}
+function hDrop(e){e.preventDefault();el('dz').style.borderColor='';hFiles(e.dataTransfer.files);}
+function rPdfO() {
+  var div=el('pdf-blk');
+  if(!pdfOrds.length){div.innerHTML='';return;}
+  div.innerHTML=pdfOrds.map(function(o,i){
+    var rev=o.lns.reduce(function(a,l){return a+l.price*l.qty;},0);
+    return '<div class="ob"><div class="oh"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:500">'+o.dNm+'</span>'+(o.cli?'<span class="bdg bg">'+o.cli.name+'</span>':'<span class="bdg ba">Onbekend</span>')+'<span style="font-size:11px;color:var(--text3)">#'+o.bestelling+(o.lev?' \u00B7 '+o.lev:'')+'</span></div><div style="font-size:11px;color:var(--text3);margin-top:2px">'+o.lns.length+' producten \u00B7 \u20AC'+rev.toFixed(2)+'</div></div><select style="width:auto;font-size:11px;background:var(--bg4)" onchange="pdfOrds['+i+'].dl=this.value;svDay()"><option value="">Deadline: \u2014</option>'+'09:00,10:00,11:00,12:00,13:00,14:00'.split(',').map(function(t){return '<option'+(o.dl===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select><button class="btn bts" onclick="pdfOrds['+i+'].col=!pdfOrds['+i+'].col;svDay();rPdfO()">'+(o.col?'\u25BC':'\u25B2')+'</button><button class="btn bts btd" onclick="pdfOrds.splice('+i+',1);svDay();rPdfO()">&times;</button></div>'+(o.col?'':'<div style="padding:.75rem 1rem">'+o.lns.map(function(l){return '<div style="display:grid;grid-template-columns:28px 1fr auto auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="font-weight:500;color:var(--text3)">'+l.qty+'&times;</span><span>'+l.prod.name+' <span style="font-size:10px;color:var(--text3)">#'+l.nr+'</span>'+(o.cli&&o.cli.prices&&o.cli.prices[l.prod.name]!==undefined?'<span class="bdg bb" style="margin-left:4px;font-size:9px">klantprijs</span>':'')+'</span><span style="font-size:11px;color:var(--text3)">\u20AC'+l.price.toFixed(2)+'</span><span style="font-weight:500">\u20AC'+(l.price*l.qty).toFixed(2)+'</span></div>';}).join('')+'</div>')+'</div>';
+  }).join('');
+}
+
+// ===== ORDERS =====
+function popCS() {
+  var s=el('man-cli'),c=s.value;
+  s.innerHTML='<option value="">\u2014 Standaard \u2014</option>';
+  clients.forEach(function(cl,i){s.innerHTML+='<option value="'+i+'"'+(c==i?' selected':'')+'>'+cl.name+'</option>';});
+  popPS();
+}
+function popPS() {
+  var s=el('add-prod'),ci=gCI();
+  s.innerHTML='<option value="">Kies product...</option>';
+  var cats=[];
+  prods.forEach(function(p){if(cats.indexOf(p.cat)<0)cats.push(p.cat);});
+  cats.forEach(function(cat){
+    s.innerHTML+='<optgroup label="'+cat+'">';
+    prods.forEach(function(p,i){if(p.cat===cat){var pr=gCP(ci,p.name,p.price);s.innerHTML+='<option value="'+i+'">'+p.name+' \u2014 \u20AC'+pr.toFixed(2)+'</option>';}});
+    s.innerHTML+='</optgroup>';
+  });
+}
+function addOL() {
+  var idx=parseInt(el('add-prod').value),qty=parseInt(el('add-qty').value);
+  if(isNaN(idx)||isNaN(qty)||qty<1) return;
+  var ci=gCI(),p=prods[idx],pr=gCP(ci,p.name,p.price);
+  var ex=orders.find(function(o){return o.pi===idx;});
+  if(ex) ex.qty+=qty; else orders.push({pi:idx,qty:qty,cp:ci>=0?pr:null});
+  svDay();rOL();uM();
+  el('add-prod').value='';el('add-qty').value=1;
+}
+function rOL() {
+  var div=el('ord-list'),ci=gCI();
+  if(!orders.length){div.innerHTML='<div class="empty">Nog geen orders.</div>';return;}
+  div.innerHTML=orders.map(function(o,i){
+    var p=prods[o.pi],pr=o.cp||gCP(ci,p.name,p.price);
+    return '<div class="orow"><span style="font-weight:500;color:var(--text3)">'+o.qty+'&times;</span><span>'+p.name+(o.cp?'<span class="bdg bb" style="margin-left:4px;font-size:9px">klantprijs</span>':'')+'</span><input type="number" min="1" value="'+o.qty+'" style="width:52px;font-size:12px" onchange="orders['+i+'].qty=parseInt(this.value)||1;svDay();uM()"/><span style="font-size:12px;color:var(--text3)">\u20AC'+pr.toFixed(2)+' \u00B7 \u20AC'+(pr*o.qty).toFixed(2)+'</span><button class="btn bts btd" onclick="orders.splice('+i+',1);svDay();rOL();uM()">&times;</button></div>';
+  }).join('');
+}
+function uM() {
+  var ac=dagS,nW=Math.max(ac.length,1);
+  if(!orders.length){
+    ['m-end','m-min','m-rev','m-ic','m-lab','m-ls','m-pft','m-mg'].forEach(function(id){var e=el(id);if(e)e.textContent='\u2014';});
+    el('ing-ov').innerHTML='<div class="empty">Voeg orders toe.</div>';
+    return;
+  }
+  var ci=gCI(),rev=0,ic=0,lm=0,im={};
+  orders.forEach(function(o){
+    var p=prods[o.pi],pr=o.cp||gCP(ci,p.name,p.price);
+    rev+=pr*o.qty;ic+=p.cost*o.qty;lm+=p.labor*o.qty;
+    (p.ing||[]).forEach(function(ing){im[ing]=(im[ing]||0)+o.qty;});
+  });
+  var em=lm/nW,lc=0;
+  ac.forEach(function(s){lc+=s.wage*Math.min(em/60,cN(s)/60)/(parseFloat(s.factor)||1);});
+  var ea=ac.length?Math.min.apply(null,ac.map(function(s){return toM(s.start);})):toM('08:00');
+  var pft=rev-ic-lc,mg=rev>0?Math.round(pft/rev*100):0;
+  el('m-end').textContent=toT(ea+em);
+  el('m-min').textContent='~'+Math.round(em)+' min';
+  el('m-rev').textContent='\u20AC'+rev.toFixed(2);
+  el('m-ic').textContent='Ingredi\u00EBnten \u20AC'+ic.toFixed(2);
+  el('m-lab').textContent='\u20AC'+lc.toFixed(2);
+  el('m-ls').textContent=nW+' mw. \u00B7 uurloon totaal';
+  el('m-pft').textContent='\u20AC'+pft.toFixed(2);
+  el('m-pft').className='mv '+(pft>=0?'ppos':'pneg');
+  el('m-mg').textContent=mg+'% netto marge';
+  el('ing-ov').innerHTML='<div style="display:flex;flex-wrap:wrap;gap:6px">'+Object.entries(im).sort(function(a,b){return b[1]-a[1];}).map(function(e){return '<span class="ich"><span style="font-weight:500">'+e[0]+'</span><span style="color:var(--text3);margin-left:5px">&times;'+e[1]+'</span></span>';}).join('')+'</div>';
+}
+
+// ===== ROLLEN =====
+function calcRolls() {
+  var total=0;
+  orders.forEach(function(o){var p=prods[o.pi];if(p)total+=(p.rolls||0)*o.qty;});
+  el('tl-r').value=Math.round(total);
+  return Math.round(total);
+}
+
+// ===== TIJDLIJN =====
+function rTL() {
+  var ro=parseInt(el('tl-r').value)||0,cp=toM(el('tl-cp').value||'12:00');
+  var tW=parseFloat(el('tl-w').value)||0,tK=parseFloat(el('tl-k').value)||0,tSc=parseFloat(el('tl-sc').value)||0;
+  var tSn=parseFloat(el('tl-sn').value)||0,tRo=parseFloat(el('tl-ro').value)||0,tS2=parseFloat(el('tl-s2').value)||0,tOp=parseFloat(el('tl-op').value)||0,tVp=parseFloat(el('tl-vp').value)||0;
+  var mpr=tRo+tS2+tOp+tVp;
+  var ws=dagS.map(function(w,i){return Object.assign({},w,{idx:i,sM:toM(w.start),eM:toM(w.end),blk:bBlk(w)});}).filter(function(w){return w.eM>w.sM;}).sort(function(a,b){return a.sM-b.sM;});
+  if(!ws.length){el('tl-tl').innerHTML='<div class="empty">Voeg personeel toe in stap 1.</div>';return;}
+  var ea=ws[0].sM,kkS=ea+tW,kkE=kkS+tK,rjK=kkE+tSc,nW=ws.length;
+  var totSn=tSn*ro,snP=ws.reduce(function(a,w){return a+wM(w,kkS,kkE);},0),snIK=Math.min(totSn,snP),snNK=Math.max(0,totSn-snIK);
+  var tn=ws.reduce(function(a,w){return a+cN(w);},0);
+  var idle=0;ws.slice(1).forEach(function(w){if(w.sM<rjK)idle+=wM(w,w.sM,Math.min(rjK,w.eM));});
+  var apr=ws.reduce(function(a,w){var g=w.eM-Math.max(w.sM,rjK),n=wM(w,Math.max(w.sM,rjK),w.eM);return a+(g>0?n/g:1);},0)/nW;
+  var vw=(snNK+mpr*ro)/nW,vE=rjK+(apr>0?vw/apr:vw);
+  var cCP=ws.reduce(function(a,w){return a+wM(w,rjK,Math.min(w.eM,cp));},0),rCP=mpr>0?Math.floor(cCP/mpr):0,cpP=ro>0?Math.round(rCP/ro*100):0;
+  var maxE=Math.max.apply(null,ws.map(function(w){return w.eM;}));
+  el('tl-end').textContent=toT(vE);
+  el('tl-end').style.color=vE<=maxE+15?'var(--text)':'var(--red)';
+  el('tl-min').textContent=Math.round(vE-ea)+' min totaal';
+  el('tl-cpv').textContent=ro>0?rCP+'/'+ro:'\u2014';
+  el('tl-cpv').style.color=cpP>=60?'var(--green)':'var(--amber)';
+  el('tl-cps').textContent=ro>0?cpP+'% voor '+toT(cp):'';
+  el('tl-cap').textContent=hS(tn);
+  el('tl-caps').textContent=nW+' mw. netto';
+  el('tl-idle').textContent=idle>0?hS(idle):'0 min';
+  el('tl-idls').textContent=idle>0?'benut voor prep':'effici\u00EBnt';
+  var al=[];
+  if(ro===0) al.push('<div class="alert ai">Ga naar stap 2 (Orders) om orders in te voeren. Rollen worden automatisch berekend.</div>');
+  if(ro>0&&vE>maxE+30) al.push('<div class="alert ad">Productie loopt tot '+toT(vE)+' maar medewerkers zijn eerder weg.</div>');
+  if(ro>0&&cpP<50) al.push('<div class="alert aw">Slechts '+rCP+'/'+ro+' rollen ('+cpP+'%) klaar voor '+toT(cp)+'.</div>');
+  else if(ro>0&&cpP>=60) al.push('<div class="alert aok">'+rCP+' van '+ro+' rollen klaar voor '+toT(cp)+' \u2014 planning loopt goed.</div>');
+  if(idle>20) al.push('<div class="alert ai">Wachttijd '+hS(idle)+': inzetten voor sauzen, dozen, verpakkingsmateriaal.</div>');
+  el('tl-alerts').innerHTML=al.join('');
+  if(ro===0){el('tl-tl').innerHTML='<div class="empty">Voer eerst orders in (stap 2).</div>';return;}
+  var tEnd=Math.max(vE,maxE)+15,span=tEnd-ea||1;
+  function pct(t){return Math.max(0,(t-ea)/span*100).toFixed(2)+'%';}
+  function wd(d){return Math.max(0.3,d/span*100).toFixed(2)+'%';}
+  var tks='';
+  for(var t=Math.floor(ea/30)*30;t<=tEnd+30;t+=30){if(t>=ea)tks+='<div class="ttick" style="left:'+pct(t)+'">'+toT(t)+'</div>';}
+  var cpL='<div class="tcp" style="left:'+pct(cp)+'"></div>';
+  var rows='<div class="trow" style="margin-bottom:8px"><div class="tlbl"></div><div class="ttrk" style="height:20px">'+tks+cpL+'</div></div>';
+  ws.forEach(function(w){
+    var isF=w.idx===ws[0].idx,bars=[];
+    if(isF){
+      bars.push({s:ea,d:tW,c:'#22c55e',tc:'#052e12',l:'Wassen'});
+      bars.push({s:kkS,d:tK,c:'#16a34a',tc:'#f0fdf4',l:'Koken'});
+      var sb=wM(w,kkS,kkE);
+      if(sb>0&&tSn>0) bars.push({s:kkS,d:Math.min(sb,totSn/nW),c:'#f59e0b',tc:'#1c0a00',l:'Snijden'});
+      bars.push({s:kkE,d:tSc,c:'#15803d',tc:'#f0fdf4',l:'Scheppen'});
+    } else {
+      var sb2=wM(w,kkS,kkE);
+      if(sb2>0&&tSn>0) bars.push({s:Math.max(w.sM,kkS),d:Math.min(sb2,totSn/nW),c:'#f59e0b',tc:'#1c0a00',l:'Snijden'});
+      if(w.sM<rjK) bars.push({s:w.sM,d:Math.min(rjK,w.eM)-w.sM,c:'#1f2937',tc:'#6b7280',l:'Wacht'});
+    }
+    w.blk.filter(function(b){return b.t==='pause';}).forEach(function(b){bars.push({s:b.s,d:b.e-b.s,c:'#374151',tc:'#9ca3af',l:'Pauze'});});
+    var vc=rjK;
+    [{d:snNK/nW,c:'#f59e0b',tc:'#1c0a00',l:'Snijden'},{d:tRo*ro/nW,c:'#3b82f6',tc:'#eff6ff',l:'Rollen'},{d:tS2*ro/nW,c:'#2563eb',tc:'#eff6ff',l:'Snijden'},{d:tOp*ro/nW,c:'#2563eb',tc:'#eff6ff',l:'Opmaken'},{d:tVp*ro/nW,c:'#1d4ed8',tc:'#eff6ff',l:'Verpakken'}].forEach(function(st){
+      if(st.d<=0) return;
+      var rem=st.d;
+      w.blk.forEach(function(b){if(b.t!=='work'||b.e<=vc||rem<=0)return;var ws2=Math.max(b.s,vc),we=b.e;if(we<=ws2)return;var tk=Math.min(rem,we-ws2);bars.push({s:ws2,d:tk,c:st.c,tc:st.tc,l:st.l});vc=ws2+tk;rem-=tk;});
+    });
+    rows+='<div class="trow"><div class="tlbl">'+w.name+'<br><span style="font-size:9px">'+w.start+'\u2013'+w.end+(w.pauses&&w.pauses.length?' \u00B7 '+w.pauses.length+'&times; p':'')+'</span></div><div class="ttrk">'+bars.map(function(b){return '<div class="tbar" style="left:'+pct(b.s)+';width:'+wd(b.d)+';background:'+b.c+';color:'+b.tc+'">'+(b.d>10?b.l:'')+'</div>';}).join('')+'<div class="tend" style="left:'+pct(w.eM)+'"></div>'+cpL+'</div></div>';
+  });
+  el('tl-tl').innerHTML=rows;
+}
+
+// ===== PRODUCTEN =====
+function showPF(idx) {
+  ePI=idx!==undefined?idx:-1;
+  tmpI=ePI>=0?prods[ePI].ing.slice():[];
+  var p=ePI>=0?prods[ePI]:null;
+  el('pft').textContent=ePI>=0?'Product bewerken':'Nieuw product';
+  el('p-n').value=p?p.name:''; el('p-c').value=p?p.cat:'Sushi';
+  el('p-pr').value=p?p.price:''; el('p-co').value=p?p.cost:''; el('p-ti').value=p?p.labor:'';
+  el('p-nr').value=p?(p.nr||''):''; el('p-ro').value=p?(p.rolls!==undefined?p.rolls:1):'';
+  rIT();
+  el('pform').style.display='block'; el('ptbl').style.display='none';
+}
+function canPF(){el('pform').style.display='none';el('ptbl').style.display='block';}
+function addI(){var v=el('p-ii').value.trim();if(!v)return;v.split(',').map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){if(tmpI.indexOf(x)<0)tmpI.push(x);});el('p-ii').value='';rIT();}
+function rIT(){el('itags').innerHTML=tmpI.map(function(x,i){return '<span style="background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:3px 9px;font-size:12px;display:inline-flex;align-items:center;gap:5px;margin:3px">'+x+'<button onclick="tmpI.splice('+i+',1);rIT()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:13px;padding:0">&times;</button></span>';}).join('');}
+function saveP(){
+  var n=el('p-n').value.trim(),pr=parseFloat(el('p-pr').value),co=parseFloat(el('p-co').value),ti=parseFloat(el('p-ti').value);
+  if(!n||isNaN(pr)||isNaN(co)||isNaN(ti)){alert('Vul alle velden in.');return;}
+  var p={nr:el('p-nr').value.trim(),name:n,cat:el('p-c').value,price:pr,cost:co,labor:ti,ing:tmpI.slice(),rolls:parseFloat(el('p-ro').value)||0};
+  if(ePI>=0)prods[ePI]=p; else prods.push(p);
+  sv();rPL();canPF();popPS();
+}
+function delP(i){if(confirm('"'+prods[i].name+'" verwijderen?')){prods.splice(i,1);sv();rPL();popPS();}}
+function rPL() {
+  var div=el('plist');
+  el('pc').textContent='('+prods.length+')';
+  if(!prods.length){div.innerHTML='<div class="empty">Geen producten.</div>';return;}
+  var cats=[];
+  prods.forEach(function(p){if(cats.indexOf(p.cat)<0)cats.push(p.cat);});
+  div.innerHTML=cats.map(function(cat){
+    var cp=prods.map(function(p,i){return Object.assign({},p,{i:i});}).filter(function(p){return p.cat===cat;});
+    return '<div style="margin-bottom:1.5rem"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">'+cat+'</div><table><thead><tr><th>Product</th><th>Nr</th><th>Standaard</th><th>Kostprijs</th><th>Marge</th><th>Arbeid</th><th>Rollen</th><th></th></tr></thead><tbody>'+cp.map(function(p){var mg=Math.round((p.price-p.cost)/p.price*100);return '<tr><td style="font-weight:500">'+p.name+'</td><td style="color:var(--text3)">'+( p.nr||'')+'</td><td>\u20AC'+p.price.toFixed(2)+'</td><td>\u20AC'+p.cost.toFixed(2)+'</td><td><span class="bdg '+(mg>=50?'bg':mg>=35?'ba':'br')+'">'+mg+'%</span></td><td>'+p.labor+' min</td><td>'+(p.rolls||0)+'</td><td style="display:flex;gap:4px"><button class="btn bts" onclick="showPF('+p.i+')">Bewerk</button><button class="btn bts btd" onclick="delP('+p.i+')">&times;</button></td></tr>';}).join('')+'</tbody></table></div>';
+  }).join('');
+}
+
+// ===== KLANTEN =====
+function showCF(idx) {
+  eCI=idx!==undefined?idx:-1;
+  var c=eCI>=0?clients[eCI]:null;
+  el('cft').textContent=eCI>=0?'Klant bewerken':'Nieuwe klant';
+  el('c-n').value=c?c.name:''; el('c-nr').value=c?(c.debnr||''):''; el('c-ty').value=c?c.type:'viswinkel';
+  rCPri(c?c.prices:{});
+  el('cform').style.display='block'; el('ctbl').style.display='none';
+}
+function rCPri(ex) {
+  var cats=[];prods.forEach(function(p){if(cats.indexOf(p.cat)<0)cats.push(p.cat);});
+  el('cpri').innerHTML=cats.map(function(cat){
+    var cp=prods.filter(function(p){return p.cat===cat;});
+    return '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:10px 0 5px">'+cat+'</div>'+cp.map(function(p){var key=p.name.replace(/[\s\.]/g,'_');return '<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:3px 0"><span style="font-size:13px">'+p.name+' <span style="color:var(--text3);font-size:11px">std \u20AC'+p.price.toFixed(2)+'</span></span><input type="number" id="cp-'+key+'" min="0" step=".01" placeholder="'+p.price.toFixed(2)+'" value="'+(ex[p.name]||'')+'" style="width:80px;font-size:12px"/></div>';}).join('');
+  }).join('');
+}
+function canCF(){el('cform').style.display='none';el('ctbl').style.display='block';}
+function saveC(){
+  var n=el('c-n').value.trim();
+  if(!n){alert('Naam verplicht.');return;}
+  var prices={};
+  prods.forEach(function(p){var key=p.name.replace(/[\s\.]/g,'_');var e=el('cp-'+key);if(e){var v=parseFloat(e.value);if(!isNaN(v)&&v>0)prices[p.name]=v;}});
+  var c={name:n,debnr:el('c-nr').value.trim(),type:el('c-ty').value,prices:prices};
+  if(eCI>=0)clients[eCI]=c; else clients.push(c);
+  sv();rCL();canCF();popCS();
+}
+function delC(i){if(confirm('"'+clients[i].name+'" verwijderen?')){clients.splice(i,1);sv();rCL();popCS();}}
+function rCL() {
+  var div=el('clist');
+  if(!clients.length){div.innerHTML='<div class="empty">Geen klanten.</div>';return;}
+  var tm={viswinkel:'Viswinkel',restaurant:'Restaurant',traiteur:'Traiteur',overig:'Overig'};
+  div.innerHTML='<table><thead><tr><th>Klant</th><th>Deb.nr</th><th>Type</th><th>Eigen prijzen</th><th>Gem. marge</th><th></th></tr></thead><tbody>'+clients.map(function(c,i){
+    var np=Object.keys(c.prices||{}).length;
+    var ms=Object.entries(c.prices||{}).map(function(e){var p=prods.find(function(p){return p.name===e[0];});return p?(e[1]-p.cost)/e[1]:null;}).filter(function(x){return x!==null;});
+    var avg=ms.length?Math.round(ms.reduce(function(a,b){return a+b;},0)/ms.length*100):null;
+    return '<tr><td style="font-weight:500">'+c.name+'</td><td style="color:var(--text3);font-size:12px">'+(c.debnr||'\u2014')+'</td><td><span class="bdg bb">'+(tm[c.type]||c.type)+'</span></td><td>'+(np>0?'<span class="bdg bg">'+np+' producten</span>':'<span style="color:var(--text3);font-size:11px">Standaard</span>')+'</td><td>'+(avg!==null?'<span class="bdg '+(avg>=45?'bg':avg>=35?'ba':'br')+'">'+avg+'%</span>':'\u2014')+'</td><td style="display:flex;gap:4px"><button class="btn bts" onclick="showCF('+i+')">Bewerk</button><button class="btn bts btd" onclick="delC('+i+')">&times;</button></td></tr>';
+  }).join('')+'</tbody></table>';
+}
+
+// ===== STOPWATCH =====
+function fmtSW(ms){var s=Math.floor(ms/1000),m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
+function swTog(i){var s=sw[i];if(s.r){clearInterval(s.iv);s.e+=Date.now()-s.s;s.r=false;el('sw-b'+i).textContent='\u25B6 Hervatten';el('sw-t'+i).classList.remove('running');}else{s.s=Date.now();s.r=true;el('sw-b'+i).textContent='\u23F8 Pauze';el('sw-t'+i).classList.add('running');s.iv=setInterval(function(){el('sw-t'+i).textContent=fmtSW(s.e+(Date.now()-s.s));},100);}}
+function swLap(i){var s=sw[i];var cur=s.r?s.e+(Date.now()-s.s):s.e;if(cur<1000)return;s.laps.push(cur);rSwL(i);chkSw();}
+function swRst(i){var s=sw[i];clearInterval(s.iv);s.r=false;s.s=null;s.e=0;s.laps=[];el('sw-t'+i).textContent='0:00';el('sw-t'+i).classList.remove('running');el('sw-b'+i).textContent='\u25B6 Start';el('sw-a'+i).textContent='Geen metingen';el('sw-l'+i).innerHTML='';chkSw();}
+function rSwL(i){var s=sw[i],rc=parseInt(el('sw-rc').value)||20;el('sw-l'+i).innerHTML=s.laps.map(function(l,li){return '<div class="sw-lap"><span>Meting '+(li+1)+'</span><span>'+fmtSW(l)+' \u00B7 '+(l/rc/1000/60).toFixed(2)+' min/rol</span></div>';}).join('');if(s.laps.length){var avg=s.laps.reduce(function(a,b){return a+b;},0)/s.laps.length;el('sw-a'+i).textContent='Gem. '+fmtSW(avg)+' \u00B7 '+(avg/rc/1000/60).toFixed(2)+' min/rol';}}
+function chkSw(){var rc=parseInt(el('sw-rc').value)||20;var avgs=sw.map(function(s){return s.laps.length?s.laps.reduce(function(a,b){return a+b;},0)/s.laps.length/rc/1000/60:null;});var h=avgs.some(function(v){return v!==null;});el('sw-apply').style.display=h?'block':'none';el('sw-res').style.display=h?'block':'none';if(h){var names=['Snijden','Rollen','Sushi snijden','Opmaken+verpakken'];el('sw-res').innerHTML=avgs.map(function(v,i){return v!==null?'<span style="margin-right:12px"><strong>'+names[i]+':</strong> '+v.toFixed(2)+' min/rol</span>':'<span style="color:var(--green);opacity:.5;margin-right:12px">'+names[i]+': nog niet gemeten</span>';}).join('');}}
+function applyMeasured(){var rc=parseInt(el('sw-rc').value)||20;var avgs=sw.map(function(s){return s.laps.length?s.laps.reduce(function(a,b){return a+b;},0)/s.laps.length/rc/1000/60:null;});var ids=['tl-sn','tl-ro','tl-s2',null];avgs.forEach(function(v,i){if(v===null||!ids[i])return;el(ids[i]).value=v.toFixed(2);});if(avgs[3]!==null){el('tl-op').value=(avgs[3]*0.55).toFixed(2);el('tl-vp').value=(avgs[3]*0.45).toFixed(2);}var m={datum:new Date().toLocaleDateString('nl-NL'),rollen:rc,tijden:['Snijden','Rollen','Sushi snijden','Opmaken+verpakken'].map(function(n,i){return {naam:n,v:avgs[i]!==null?parseFloat(avgs[i].toFixed(2)):null};})};swHistory.unshift(m);if(swHistory.length>10)swHistory=swHistory.slice(0,10);localStorage.setItem(SWK,JSON.stringify(swHistory));rSwHist();}
+function rSwHist(){var div=el('sw-hist');if(!swHistory.length){div.innerHTML='<div class="empty">Nog geen metingen.</div>';return;}div.innerHTML=swHistory.map(function(m,mi){return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-weight:500">'+m.datum+'</span><span style="font-size:11px;color:var(--text3)">'+m.rollen+' rollen</span><button class="btn bts" onclick="useHist('+mi+')">Gebruik &rarr;</button></div><div style="display:flex;flex-wrap:wrap;gap:6px">'+m.tijden.map(function(t){return t.v!==null?'<span class="ich">'+t.naam+': <strong>'+t.v+'</strong> min/rol</span>':'';}).join('')+'</div></div>';}).join('');}
+function useHist(mi){var m=swHistory[mi],ids=['tl-sn','tl-ro','tl-s2',null];m.tijden.forEach(function(t,i){if(t.v===null)return;if(ids[i])el(ids[i]).value=t.v;if(i===3){el('tl-op').value=(t.v*0.55).toFixed(2);el('tl-vp').value=(t.v*0.45).toFixed(2);}});}
+
+// ===== TAKEN (live registratie) =====
+var TASKS=['Opstarten + rijst','Snijden vis & groenten','Matjes maken','Rollen','Sushi snijden','Opmaken','Verpakken','Pauze'];
+var CTK='tsb5_ctasks';
+var customTasks=JSON.parse(localStorage.getItem(CTK)||'[]');
+function allTasks(){return TASKS.concat(customTasks);}
+function addCustomTask(){var n=prompt('Naam van de nieuwe taak:');if(!n)return;n=n.trim();if(!n)return;if(allTasks().indexOf(n)>=0){alert('Deze taak bestaat al.');return;}customTasks.push(n);localStorage.setItem(CTK,JSON.stringify(customTasks));rTk();}
+function delCustomTask(i){if(!confirm('Taak "'+customTasks[i]+'" verwijderen?'))return;customTasks.splice(i,1);localStorage.setItem(CTK,JSON.stringify(customTasks));rTk();}
+var TLK='tsb5_tlog', OLK='tsb5_olog';
+var taskLog=JSON.parse(localStorage.getItem(TLK)||'[]');
+var orderLog=JSON.parse(localStorage.getItem(OLK)||'[]');
+var tkTimer=null;
+
+function svTk(){localStorage.setItem(TLK,JSON.stringify(taskLog));localStorage.setItem(OLK,JSON.stringify(orderLog));fbSet('tsb/logs/taskLog',taskLog);fbSet('tsb/logs/orderLog',orderLog);}
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function isToday(ts){return new Date(ts).toISOString().split('T')[0]===todayStr();}
+function fmtClock(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function fmtDur(ms){var m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60;return m+':'+String(s).padStart(2,'0');}
+
+var PARALLEL_TASK='Opstarten + rijst';
+function tkActive(staffName){
+  return taskLog.filter(function(s){return s.staff===staffName&&s.end===null;});
+}
+function tkClick(staffName,task){
+  var now=Date.now();
+  var acts=tkActive(staffName);
+  var same=null;
+  acts.forEach(function(s){if(s.task===task)same=s;});
+  if(same){same.end=now;}
+  else{
+    if(task!==PARALLEL_TASK){
+      acts.forEach(function(s){if(s.task!==PARALLEL_TASK)s.end=now;});
+    }
+    taskLog.push({staff:staffName,task:task,start:now,end:null});
+  }
+  svTk();rTk();
+}
+function rTk(){
+  var board=el('tk-board');
+  if(!dagS.length){board.innerHTML='<div class="empty">Voeg eerst personeel toe in stap 1.</div>';}
+  else{
+    board.innerHTML=dagS.map(function(w){
+      var acts=tkActive(w.name);
+      var cur=acts.length?'<span class="tk-cur">Bezig: '+acts.map(function(a){return '<b>'+a.task+'</b> <span class="tk-live" data-start="'+a.start+'">'+fmtDur(Date.now()-a.start)+'</span>';}).join(' &nbsp;+&nbsp; ')+'</span>':'<span class="tk-cur">Geen actieve taak</span>';
+      var btns=allTasks().map(function(t){
+        var on=false;acts.forEach(function(a){if(a.task===t)on=true;});
+        return '<div class="tk-btn'+(on?' on':'')+'" onclick="tkClick(\''+w.name.replace(/'/g,"\\'")+'\',\''+t+'\')">'+t+(on?' \u23F8':'')+'</div>';
+      }).join('');
+      return '<div class="tk-card"><div class="tk-head"><div class="av">'+w.name.substring(0,2).toUpperCase()+'</div><div class="tk-name">'+w.name+'</div>'+cur+'</div><div class="tk-btns">'+btns+'</div></div>';
+    }).join('')+'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0 10px"><span style="font-size:11px;color:var(--text3)">Eigen taken:</span>'+(customTasks.length?customTasks.map(function(t,i){return '<span class="pc">'+t+'<button onclick="delCustomTask('+i+')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:13px;padding:0">&times;</button></span>';}).join(''):'<span style="font-size:11px;color:var(--text3)">geen</span>')+'<button class="btn bts" onclick="addCustomTask()">+ Taak toevoegen</button></div>';
+  }
+  // Open orders (pdfOrds nog niet klaargemeld)
+  var od=el('tk-orders');
+  var open=pdfOrds.filter(function(o){return !o.done;});
+  if(!open.length){od.innerHTML='<div class="empty">Geen open orders. Importeer orders in stap 2 of gebruik batch hieronder.</div>';}
+  else{
+    od.innerHTML=open.map(function(o,idx){
+      var i=pdfOrds.indexOf(o);
+      var rol=o.lns.reduce(function(a,l){return a+(l.prod.rolls||0)*l.qty;},0);
+      return '<div class="ord-done-row"><div style="flex:1"><div style="font-weight:500">'+o.dNm+' <span style="font-size:11px;color:var(--text3)">#'+o.bestelling+'</span></div><div style="font-size:11px;color:var(--text3)">'+o.lns.length+' producten \u00B7 '+Math.round(rol)+' rollen'+(o.dl?' \u00B7 deadline '+o.dl:'')+'</div></div><button class="btn bta" onclick="tkOrderDone('+i+')">\u2713 Order klaar</button></div>';
+    }).join('');
+  }
+  // Log vandaag
+  var log=el('tk-log');
+  var today=taskLog.filter(function(s){return isToday(s.start);});
+  var todayO=orderLog.filter(function(o){return isToday(o.done);});
+  el('tk-count').textContent='('+today.length+' sessies, '+todayO.length+' orders)';
+  if(!today.length&&!todayO.length){log.innerHTML='<div class="empty">Nog niets gelogd vandaag.</div>';}
+  else{
+    var rows='<table><thead><tr><th>Medewerker</th><th>Taak</th><th>Start</th><th>Eind</th><th>Duur</th><th></th></tr></thead><tbody>';
+    today.slice().reverse().forEach(function(s){
+      var gi=taskLog.indexOf(s);
+      var dur=s.end?fmtDur(s.end-s.start):'<span class="tk-live" data-start="'+s.start+'">'+fmtDur(Date.now()-s.start)+'</span>';
+      rows+='<tr><td>'+s.staff+'</td><td>'+s.task+'</td><td>'+fmtClock(s.start)+'</td><td>'+(s.end?fmtClock(s.end):'<span style="color:var(--green)">bezig</span>')+'</td><td>'+dur+'</td><td><button class="btn bts btd" onclick="taskLog.splice('+gi+',1);svTk();rTk()">&times;</button></td></tr>';
+    });
+    todayO.forEach(function(o){
+      rows+='<tr style="background:var(--green-dim)"><td colspan="2" style="color:var(--green)">\u2713 '+o.naam+'</td><td colspan="2" style="color:var(--green)">'+fmtClock(o.done)+'</td><td style="color:var(--green)">'+o.rollen+' rollen</td><td></td></tr>';
+    });
+    rows+='</tbody></table>';
+    log.innerHTML=rows;
+  }
+  if(tkTimer)clearInterval(tkTimer);
+  tkTimer=setInterval(function(){
+    document.querySelectorAll('.tk-live').forEach(function(sp){sp.textContent=fmtDur(Date.now()-parseInt(sp.getAttribute('data-start')));});
+  },1000);
+}
+function tkOrderDone(i){
+  var o=pdfOrds[i];if(!o)return;
+  var rol=o.lns.reduce(function(a,l){return a+(l.prod.rolls||0)*l.qty;},0);
+  o.done=Date.now();
+  orderLog.push({naam:o.dNm+' #'+o.bestelling,rollen:Math.round(rol),done:o.done});
+  svTk();rTk();
+}
+function tkBatchDone(){
+  var nm=el('tk-batch-nm').value.trim(),r=parseInt(el('tk-batch-r').value)||0;
+  if(!nm){alert('Vul een omschrijving in.');return;}
+  orderLog.push({naam:nm,rollen:r,done:Date.now()});
+  el('tk-batch-nm').value='';el('tk-batch-r').value=0;
+  svTk();rTk();
+}
+function tkClearToday(){
+  if(!confirm('Alle registraties van vandaag wissen?'))return;
+  taskLog=taskLog.filter(function(s){return !isToday(s.start);});
+  orderLog=orderLog.filter(function(o){return !isToday(o.done);});
+  svTk();rTk();
+}
+function dlCSV(name,rows){
+  var csv=rows.map(function(r){return r.map(function(c){c=String(c);return c.indexOf(';')>=0||c.indexOf('"')>=0?'"'+c.replace(/"/g,'""')+'"':c;}).join(';');}).join('\r\n');
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+}
+function expTaskCSV(){
+  var rows=[['Datum','Medewerker','Taak','Start','Eind','Minuten']];
+  taskLog.forEach(function(s){
+    var d=new Date(s.start);
+    rows.push([d.toISOString().split('T')[0],s.staff,s.task,fmtClock(s.start),s.end?fmtClock(s.end):'',s.end?((s.end-s.start)/60000).toFixed(1):'']);
+  });
+  dlCSV('taken_'+todayStr()+'.csv',rows);
+}
+function expOrderCSV(){
+  var rows=[['Datum','Order','Rollen','Klaar om']];
+  orderLog.forEach(function(o){
+    var d=new Date(o.done);
+    rows.push([d.toISOString().split('T')[0],o.naam,o.rollen,fmtClock(o.done)]);
+  });
+  dlCSV('orders_'+todayStr()+'.csv',rows);
+}
+
+// ===== INIT =====
+rDS(); popCS(); popPS(); rOL(); uM(); rPL(); rCL(); rSwHist();
+</script>
+</body>
+</html>
